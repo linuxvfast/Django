@@ -1,3 +1,20 @@
+推荐使用的正则匹配
+urls.py
+from django.conf.urls import url
+urlpatterns = [
+    url(r'admin/', admin.site.urls),
+    url(r'^detail-(?P<nid>\d+)-(?P<uid>\d+).html', views.detail),
+]
+
+views.py
+def detail(request,*args,**kwargs):
+    print(kwargs)
+    nid = kwargs.get('nid',None)
+    return HttpResponse(nid)
+    
+浏览器访问http://127.0.0.1:8000/detail-1-3.html
+
+======================================
 urs.py中
 from django.conf.urls import url
 urlpatterns = [
