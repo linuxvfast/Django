@@ -1,0 +1,27 @@
+urls.py规则
+   path('index', views.index),
+   
+views.py 视图映射
+  USER_DICT = {
+    'k1':'root1',
+    'k2':'test1',
+    'k3':'hao1',
+  }
+def index(request):
+    return render(request,'index.html',{'user_dict':USER_DICT})
+    
+模板文件
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <ul>
+        {% for k,v in user_dict.items %}
+        <li>{{ k }}"-"{{ v }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
