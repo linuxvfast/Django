@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/register" method="post" enctype="multipart/form-data">
+        <!--form加上enctype="multipart/form-data"会把所有的input提交的东西放到post中，文件内容会放到files中,\
+        添加此参数POST中使用get时获取不到文件名的,需要使用-->
+        <p>用户注册</p>
+        <p>
+            <input type="text" name="user" placeholder="用户名:" />
+        </p>
+        <p>
+            <input type="password" name="pwd" placeholder="密码:" />
+        </p>
+        <p>
+            男:<input type="radio" name="gender" value="g1" />
+            女:<input type="radio" name="gender" value="g2" />
+        </p>
+        <p>
+            篮球:<input type="checkbox" name="favor" value="f1" />
+            足球:<input type="checkbox" name="favor" value="f2" />
+        </p>
+        <p>
+            <select name="city" multiple> <!--如果添加multiple是提交多个值，需要通过getlist获取提交的值-->
+                <option value="sh">上海</option>
+                <option value="bj">北京</option>
+                <option value="tj">天津</option>
+            </select>
+        </p>
+        <p>
+            <input type="file" name="msg" />
+        </p>
+        <input type="submit" value="提交" />
+    </form>
+</body>
+</html>
