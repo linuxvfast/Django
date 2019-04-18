@@ -1,0 +1,38 @@
+urs.py中
+from django.conf.urls import url
+urlpatterns = [
+    url(r'admin/', admin.site.urls),
+    url(r'^detail-(\d+)-(\d+).html', views.detail),
+    url(r'^index', views.index),
+]
+
+views.py中
+def detail(request,nid,uid):
+    print(nid,uid)
+    return HttpResponse(nid)
+    
+    
+浏览器访问http://127.0.0.1:8000/detail-1-3.html
+会打印出来传入的两个参数
+
+
+
+======================
+一个参数的如下
+
+ urs.py中
+from django.conf.urls import url
+urlpatterns = [
+    url(r'admin/', admin.site.urls),
+    url(r'^detail-(\d+).html', views.detail),
+    url(r'^index', views.index),
+]
+
+views.py中
+def detail(request,nid):
+    print(nid)
+    return HttpResponse(nid)
+    
+    
+浏览器访问http://127.0.0.1:8000/detail-1.html
+会打印出来传入的一个参数
