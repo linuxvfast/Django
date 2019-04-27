@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.hide{
+			display: none;
+		}
+		.shade{
+			position: fixed;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			background: black;
+			opacity: 0.6;	/*透明度*/
+			z-index: 99;
+		}
+		.add_modal{
+			position: fixed;
+			height: 300px;
+			width: 500px;
+			top: 100px;
+			left: 50%;
+			z-index: 101;
+			border: 1px solid red;
+			background: white;
+			margin-left: -200px;
+		}
+	</style>
+</head>
+<body>
+	<h1>主机列表(对象)</h1>
+	<input id="add_host" type="button" value="添加"/>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>序列号</th>
+				<th>主机名</th>
+				<th>IP</th>
+				<th>端口</th>
+				<th>业务线名称</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in v1 %}
+				<tr host_id="{{ row.nid }}" busines_id="{{ row.module_id }}">
+					<td>{{ forloop.counter }}</td>	<!--显示序号，数据库中的数据改变不会影响显示的顺序，始终从1开始-->
+					<td>{{ row.hostname }}</td>
+					<td>{{ row.ip }}</td>
+					<td>{{ row.port }}</td>
+					<td>{{ row.module.caption }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h1>主机列表(字典)</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>主机名</th>
+				<th>IP</th>
+				<th>端口</th>
+				<th>业务线名称</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in v2 %}
+				<tr host_id="{{ row.nid }}" busines_id="{{ row.module_id }}">
+					<td>{{ row.hostname }}</td>
+					<td>{{ row.ip }}</td>
+					<td>{{ row.port }}</td>
+					<td>{{ row.module__caption }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h1>主机列表(元祖)</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>主机名</th>
+				<th>IP</th>
+				<th>端口</th>
+				<th>业务线名称</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in v3 %}
+				<tr host_id="{{ row.0 }}" busines_id="{{ row.4 }}">
+					<td>{{ row.1 }}</td>
+					<td>{{ row.2 }}</td>
+					<td>{{ row.3 }}</td>
+					<td>{{ row.6 }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="shade hide"></div>
+	<div class="add_modal hide">
+		<form action="/cmdb/host" method="post">
+			<div class="group">
+				<input type="text" placeholder="主机名" name="hostname"/>
+			</div>
+			<div class="group">
+				<input type="text" placeholder="IP" name="ip"/>
+			</div>
+			<div class="group">
+				<input type="text" placeholder="端口" name="port"/>
+			</div>
+			<div class="group">
+				<select name="module_id">
+					{% for row in busines_list %}
+						<option value="{{ row.id }}">{{ row.caption }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<input type="submit" value="提交">
+			<input id="cancel" type="button" value="取消">
+		</form>
+	</div>
+	<script src="/static/jquery-3.1.1.js"></script>
+	<script>
+		$(function(){
+			$('#add_host').click(function(){
+				$('.shade,.add_modal').removeClass('hide');
+			})
+			$('#cancel').click(function(){
+				$('.shade,.add_modal').addClass('hide');
+			})
+		})
+	</script>
+</body>
+</html>
