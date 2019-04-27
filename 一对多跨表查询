@@ -1,0 +1,164 @@
+#models.py内容
+from django.db import models
+
+# Create your models here.
+
+class Host(models.Model):
+    '''host info'''
+    nid = models.AutoField(primary_key=True)
+    hostname = models.CharField(max_length=32,db_index=True)
+    ip = models.GenericIPAddressField(protocol='ipv4',db_index=True)
+    port = models.IntegerField()
+    module = models.ForeignKey('Business',to_field='id',on_delete=None)
+
+class Business(models.Model):
+    '''business module'''
+    caption = models.CharField(max_length=32)
+
+
+#views.py内容
+from django.shortcuts import render
+
+# Create your views here.
+from django.shortcuts import HttpResponse
+from cmdb import models
+
+def add_info(request):
+    models.Host.objects.create(nid=1,hostname='www.a.com',ip='192.168.1.123',port=22,module_id=1)
+    models.Host.objects.create(nid=2,hostname='www.b.com',ip='192.168.1.12',port=3389,module_id=2)
+    return HttpResponse('OK')
+
+
+def business(request):
+    v1 = models.Business.objects.all()  #对象
+    print(v1)
+    v2 = models.Business.objects.all().values('id','caption')   #字典
+    v3 = models.Business.objects.all().values_list('id','caption')  #元组
+    print(v2)
+    print(v3)
+    return render(request,'business.html',{'v1':v1,'v2':v2,'v3':v3})
+
+def hosts(request):
+    v1 = models.Host.objects.filter(nid__gt=0)
+    # for row in v1:
+    #     print(row.nid,row.hostname,row.ip,row.port,row.module_id,row.module.id,row.module.caption)
+    #对象中取值时使用.进行取值
+    v2 = models.Host.objects.filter(nid__gt=0).values('nid','hostname','ip','port','module_id','module__id','module__caption')
+    # print(v2)
+    # for row in v2:
+    #     print(row['nid'],row['hostname'],row['ip'],row['port'],row['module_id'],row['module__id'],row['module__caption'])
+    
+    v3 = models.Host.objects.filter(nid__gt=0).values_list('nid','hostname','ip','port','module_id','module__id','module__caption')
+    # print(v3)
+    # for row in v3:
+    #     print(row[0],row[1],row[2],row[3],row[4],row[5],row[6])
+    return render(request,'host.html',{'v1':v1,'v2':v2,'v3':v3})
+
+
+#模板文件
+#host.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>主机列表(对象)</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>主机名</th>
+				<th>IP</th>
+				<th>端口</th>
+				<th>业务线名称</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in v1 %}
+				<tr host_id="{{ row.nid }}" busines_id="{{ row.module_id }}">
+					<td>{{ row.hostname }}</td>
+					<td>{{ row.ip }}</td>
+					<td>{{ row.port }}</td>
+					<td>{{ row.module.caption }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h1>主机列表(字典)</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>主机名</th>
+				<th>IP</th>
+				<th>端口</th>
+				<th>业务线名称</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in v2 %}
+				<tr host_id="{{ row.nid }}" busines_id="{{ row.module_id }}">
+					<td>{{ row.hostname }}</td>
+					<td>{{ row.ip }}</td>
+					<td>{{ row.port }}</td>
+					<td>{{ row.module__caption }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h1>主机列表(元祖)</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>主机名</th>
+				<th>IP</th>
+				<th>端口</th>
+				<th>业务线名称</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in v3 %}
+				<tr host_id="{{ row.0 }}" busines_id="{{ row.4 }}">
+					<td>{{ row.1 }}</td>
+					<td>{{ row.2 }}</td>
+					<td>{{ row.3 }}</td>
+					<td>{{ row.6 }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</body>
+</html>
+
+#business.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>业务线列表</h1>
+    <ul>
+        {% for row in v1 %}
+            <li>{{ row.id }} - {{ row.caption }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>业务线列表</h1>
+    <ul>
+        {% for row in v2 %}
+            <li>{{ row.id }} - {{ row.caption }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>业务线列表</h1>
+    <ul>
+        {% for row in v3 %}
+            <li>{{ row.0 }} - {{ row.1 }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
