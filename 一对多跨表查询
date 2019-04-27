@@ -1,4 +1,4 @@
-#models.pyÄÚÈİ
+#models.pyå†…å®¹
 from django.db import models
 
 # Create your models here.
@@ -16,7 +16,7 @@ class Business(models.Model):
     caption = models.CharField(max_length=32)
 
 
-#views.pyÄÚÈİ
+#views.pyå†…å®¹
 from django.shortcuts import render
 
 # Create your views here.
@@ -30,10 +30,10 @@ def add_info(request):
 
 
 def business(request):
-    v1 = models.Business.objects.all()  #¶ÔÏó
+    v1 = models.Business.objects.all()  #å¯¹è±¡
     print(v1)
-    v2 = models.Business.objects.all().values('id','caption')   #×Öµä
-    v3 = models.Business.objects.all().values_list('id','caption')  #Ôª×é
+    v2 = models.Business.objects.all().values('id','caption')   #å­—å…¸
+    v3 = models.Business.objects.all().values_list('id','caption')  #å…ƒç»„
     print(v2)
     print(v3)
     return render(request,'business.html',{'v1':v1,'v2':v2,'v3':v3})
@@ -42,7 +42,7 @@ def hosts(request):
     v1 = models.Host.objects.filter(nid__gt=0)
     # for row in v1:
     #     print(row.nid,row.hostname,row.ip,row.port,row.module_id,row.module.id,row.module.caption)
-    #¶ÔÏóÖĞÈ¡ÖµÊ±Ê¹ÓÃ.½øĞĞÈ¡Öµ
+    #å¯¹è±¡ä¸­å–å€¼æ—¶ä½¿ç”¨.è¿›è¡Œå–å€¼
     v2 = models.Host.objects.filter(nid__gt=0).values('nid','hostname','ip','port','module_id','module__id','module__caption')
     # print(v2)
     # for row in v2:
@@ -55,7 +55,7 @@ def hosts(request):
     return render(request,'host.html',{'v1':v1,'v2':v2,'v3':v3})
 
 
-#Ä£°åÎÄ¼ş
+#æ¨¡æ¿æ–‡ä»¶
 #host.html
 <!DOCTYPE html>
 <html lang="en">
@@ -64,19 +64,21 @@ def hosts(request):
 	<title>Document</title>
 </head>
 <body>
-	<h1>Ö÷»úÁĞ±í(¶ÔÏó)</h1>
+	<h1>ä¸»æœºåˆ—è¡¨(å¯¹è±¡)</h1>
 	<table border="1">
 		<thead>
 			<tr>
-				<th>Ö÷»úÃû</th>
+				<th>åºåˆ—å·</th>
+				<th>ä¸»æœºå</th>
 				<th>IP</th>
-				<th>¶Ë¿Ú</th>
-				<th>ÒµÎñÏßÃû³Æ</th>
+				<th>ç«¯å£</th>
+				<th>ä¸šåŠ¡çº¿åç§°</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for row in v1 %}
 				<tr host_id="{{ row.nid }}" busines_id="{{ row.module_id }}">
+					<td>{{ forloop.counter }}</td>	<!--æ˜¾ç¤ºåºå·ï¼Œæ•°æ®åº“ä¸­çš„æ•°æ®æ”¹å˜ä¸ä¼šå½±å“æ˜¾ç¤ºçš„é¡ºåºï¼Œå§‹ç»ˆä»1å¼€å§‹-->
 					<td>{{ row.hostname }}</td>
 					<td>{{ row.ip }}</td>
 					<td>{{ row.port }}</td>
@@ -86,14 +88,14 @@ def hosts(request):
 		</tbody>
 	</table>
 
-	<h1>Ö÷»úÁĞ±í(×Öµä)</h1>
+	<h1>ä¸»æœºåˆ—è¡¨(å­—å…¸)</h1>
 	<table border="1">
 		<thead>
 			<tr>
-				<th>Ö÷»úÃû</th>
+				<th>ä¸»æœºå</th>
 				<th>IP</th>
-				<th>¶Ë¿Ú</th>
-				<th>ÒµÎñÏßÃû³Æ</th>
+				<th>ç«¯å£</th>
+				<th>ä¸šåŠ¡çº¿åç§°</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -108,14 +110,14 @@ def hosts(request):
 		</tbody>
 	</table>
 
-	<h1>Ö÷»úÁĞ±í(Ôª×æ)</h1>
+	<h1>ä¸»æœºåˆ—è¡¨(å…ƒç¥–)</h1>
 	<table border="1">
 		<thead>
 			<tr>
-				<th>Ö÷»úÃû</th>
+				<th>ä¸»æœºå</th>
 				<th>IP</th>
-				<th>¶Ë¿Ú</th>
-				<th>ÒµÎñÏßÃû³Æ</th>
+				<th>ç«¯å£</th>
+				<th>ä¸šåŠ¡çº¿åç§°</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -140,21 +142,21 @@ def hosts(request):
     <title>Title</title>
 </head>
 <body>
-    <h1>ÒµÎñÏßÁĞ±í</h1>
+    <h1>ä¸šåŠ¡çº¿åˆ—è¡¨</h1>
     <ul>
         {% for row in v1 %}
             <li>{{ row.id }} - {{ row.caption }}</li>
         {% endfor %}
     </ul>
 
-    <h1>ÒµÎñÏßÁĞ±í</h1>
+    <h1>ä¸šåŠ¡çº¿åˆ—è¡¨</h1>
     <ul>
         {% for row in v2 %}
             <li>{{ row.id }} - {{ row.caption }}</li>
         {% endfor %}
     </ul>
 
-    <h1>ÒµÎñÏßÁĞ±í</h1>
+    <h1>ä¸šåŠ¡çº¿åˆ—è¡¨</h1>
     <ul>
         {% for row in v3 %}
             <li>{{ row.0 }} - {{ row.1 }}</li>
