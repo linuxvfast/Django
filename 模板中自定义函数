@@ -1,0 +1,118 @@
+模板中自定义函数
+{{ item.event_start|date:"Y-m-d H:i:s"}}
+{{ bio|truncatewords:"30" }}#获取前30个字符
+{{ my_list|first|upper }}#首字母大写
+{{ name|lower }} #转化成小写
+
+			simple_tag
+				a. app下创建templatetags目录
+				b. 在templatetags中任意xxx.py文件
+				c. 创建template对象 register
+					from django import template
+					from django.utils.safestring import mark_safe
+					   
+					register = template.Library()
+				d. 
+					@register.simple_tag
+					def func(a1,a2,a3....)
+						return "asdfasd"
+				e. settings中注册APP
+				f. 需要使用simple_tag模板文件HTML时，在顶部 {% load xxx %}
+				g. {% 函数名 arg1 arg2 %}
+				缺点：
+					不能作为if条件
+				优点：
+					参数任意
+          
+			filter
+				a. app下创建templatetags目录
+				b. 任意xxoo.py文件
+				c. 创建template对象 register
+					from django import template
+					from django.utils.safestring import mark_safe
+					   
+					register = template.Library()
+				d. 
+					@register.filter
+					def func(a1,a2)
+						return "asdfasd"
+				e. settings中注册APP
+				f. 顶部 {% load xxoo %}
+				g. {{ 参数1|函数名:"参数二，参数三" }} {{ 参数1|函数名:数字 }}
+				缺点：
+					最多两个参数，不能加空格
+				优点：
+					能作为if条件
+          
+          
+    
+ 例子：
+ 模板文件
+ tpl4.html
+ {% load test %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {{ bio|truncatewords:'30' }}
+    {{ name }}
+    {{ name|first|upper }}
+    {% calculate 2 4 %}
+    {{ 'v1'|res:'BJ' }}
+    {{ v2|res:'3,6' }}
+</body>
+</html>
+
+templatetags定义的任意文件
+ from django import template
+from django.utils.safestring import mark_safe
+
+register = template.Library()
+
+@register.simple_tag
+def calculate(a1,a2):
+    return a1+a2
+
+@register.filter
+def res(v1,v2):
+    return v1+v2
+    
+视图文件
+views.py
+from django.shortcuts import render
+
+# Create your views here.
+from app01 import models
+
+def tpl1(request):
+    user_list = ['tom','Jias','lin','zeng']
+    return render(request,'tpl1.html',{'user_list':user_list})
+
+def tpl2(request):
+    user_list = ['db','web','cache']
+    return render(request,'tpl2.html',{'user_list':user_list})
+
+def tpl3(request):
+    pwd = '123456'
+    return render(request,'tpl3.html',{'pwd':pwd})
+
+def tpl4(request):
+    name = 'HELLO world'
+    bio = 'dfajdlfjadflkjadfwiejiowendfakldfjwioehga'
+    return render(request,'tpl4.html',{'name':name,'bio':bio})
+    
+    
+url路由规则
+from django.contrib import admin
+from django.urls import path
+from app01 import views
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('tpl1', views.tpl1),
+    path('tpl2', views.tpl2),
+    path('tpl3', views.tpl3),
+    path('tpl4', views.tpl4),
+]
