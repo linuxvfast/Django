@@ -1,0 +1,61 @@
+django自定义分页
+两种方式实现：
+一：模板中{{ page_str|safe }}
+二：views.py视图中mark_safe(page_str)
+
+
+views.py
+#自定义分页
+LIST = []
+for i in range(30):
+    LIST.append(i)
+def user_list(request):
+    current_page = request.GET.get('p',None) #获取当前显示的页面
+    current_page = int(current_page)
+    
+    #统计需要显示的数据
+    start_pos = (current_page - 1) * 10
+    end_pos = current_page * 10
+    data = LIST[start_pos:end_pos]
+    
+    #显示分页
+    page_str = '''
+        <a href="/cmdb/user_list/?p=1">1</a>
+        <a href="/cmdb/user_list/?p=2">2</a>
+        <a href="/cmdb/user_list/?p=3">3</a>
+    '''
+    page_str = mark_safe(page_str)#转换为合法的字符串
+
+    return render(request,'user_list.html',{'li':data,'page_str':page_str})
+    
+
+urls.py
+路由规则
+url(r'^user_list/$', views.user_list),
+
+模板文件
+user_list.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <ul>
+        {% for i in li %}
+            {% include 'li.html' %}
+        {% endfor %}
+    </ul>
+    <div>
+        {{ page_str|safe }} <!--转换为合法的字符串-->
+    </div>
+</body>
+</html>
+
+继承模板文件
+li.html
+<li>{{ i }}</li>
+
+
+
