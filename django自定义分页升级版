@@ -1,0 +1,35 @@
+#自定义分页
+LIST = []
+for i in range(50):
+    LIST.append(i)
+def user_list(request):
+    current_page = request.GET.get('p',None)
+    current_page = int(current_page)
+    per_page_count = 10
+    start_pos = (current_page - 1) * 10
+    end_pos = current_page * 10
+    data = LIST[start_pos:end_pos]
+    # page_str = '''
+    #     <a class="page" href="/cmdb/user_list/?p=1">1</a>
+    #     <a class="page" href="/cmdb/user_list/?p=2">2</a>
+    #     <a class="page" href="/cmdb/user_list/?p=3">3</a>
+    # '''
+    # page_str = mark_safe(page_str)
+
+    #对于上面页码的优化
+    all_count = len(LIST)
+    #获取商和余数,count表示页数
+    count,y = divmod(all_count,per_page_count)
+    if y:
+        count += 1
+    page_list = []
+    for i in range(1,count+1):
+        if i == current_page:#当前的页码变换颜色
+            paging = '<a class="page active" href="/cmdb/user_list/?p=%s">%s</a>'%(i,i)
+        else:
+            paging = '<a class="page" href="/cmdb/user_list/?p=%s">%s</a>'%(i,i)
+        page_list.append(paging)
+    page_str = mark_safe(''.join(page_list))
+
+
+    return render(request,'user_list.html',{'li':data,'page_str':page_str})
