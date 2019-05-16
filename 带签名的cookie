@@ -1,0 +1,74 @@
+views.py
+#测试cookie
+import datetime
+user_info = {
+    'test':{'pwd':'123456'},
+    'admin':{'pwd':'admin'},
+}
+def login(request):
+    if request.method == 'GET':
+        return render(request,'login.html')
+    if request.method == 'POST':
+        user = request.POST.get('username',None)
+        pwd = request.POST.get('pwd',None)
+        dic_pwd = user_info.get(user)
+        if not dic_pwd:
+            return render(request,'login.html')
+        if dic_pwd['pwd'] == pwd:
+            res =  redirect('/cmdb/index')
+            # res.set_cookie('username1',user)
+            # 设置cookie，关闭浏览器失效
+            # res.set_cookie('key', "value")
+            # 设置cookie, N秒只有失效
+            # res.set_cookie('username1', user, max_age=10)
+            #设置cookie，过期时间失效
+            # current_date = datetime.datetime.utcnow()
+            # current_date = current_date + datetime.timedelta(seconds=10)
+            # res.set_cookie('username1',user,expires=current_date)
+            #设置cookie无法通过js获取
+            # res.set_cookie('user_type','dfadfad',httponly=True)
+
+            #加密cookie（带签名的cookie）
+            res = HttpResponse('s')
+            res.set_signed_cookie('username',user,salt='unkown')
+            return res
+        else:
+            return render(request,'login.html')
+
+def index(request):
+    # u = request.COOKIES.get('username1')
+    u = request.get_signed_cookie('username',salt='unkown')
+    if not u:
+        return redirect('/cmdb/login')
+    return render(request,'index.html',{'current_user':u})
+    
+    
+    模板文件
+    login.html
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="login" method="POST">
+        <input type="text" name="username" placeholder="用户名" />
+        <input type="password" name="pwd"  placeholder="密码"/>
+        <input type="submit"  />
+    </form>
+</body>
+</html>
+
+
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {{ current_user }}
+</body>
+</html>
