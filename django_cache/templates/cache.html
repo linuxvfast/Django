@@ -1,0 +1,17 @@
+{% load cache %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p>{{ current_time }}</p>
+    <p>{{ current_time }}</p>
+
+    <!--局部使用cache-->
+    {% cache 10 c1 %}
+        <p>{{ current_time }}</p>
+    {% endcache %}
+</body>
+</html>
