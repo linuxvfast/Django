@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/fm" method="POST">
+        {% csrf_token %}
+        <!--<p><input type="text" name="user" placeholder="用户名"></p>
+        <p><input type="password" name="pwd" placeholder="密码"></p>
+        <p><input type="text" name="email" placeholder="邮箱"></p>-->
+
+        <!--使用form生成html-->
+        <p>{{ obj.user.label }}{{ obj.label_suffix }}{{ obj.user }} {{ obj.errors.user.0 }}</p>
+        <p>{{ obj.pwd.label }}{{ obj.label_suffix }}{{ obj.pwd }} {{ obj.errors.pwd.0 }}</p>
+        <p>{{ obj.email.label }}{{ obj.label_suffix }}{{ obj.email }} {{ obj.errors.email.0 }}</p>
+        <!--<p>{{ obj.phone }} {{ obj.errors.phone.0 }}</p>-->
+        <p>{{ obj.city }} {{ obj.errors.city.0 }}</p>
+        <!--<p>{{ obj.city2 }} {{ obj.errors.city2.0 }}</p>-->
+        <!--<p>{{ obj.file }} {{ obj.errors.file.0 }}</p>-->
+        <!--{{ obj.as_p }}
+        {{ obj.as_table }}
+        {{ obj.as_ul }}-->
+        <input type="submit" value="提交" />
+    </form>
+</body>
+</html>
