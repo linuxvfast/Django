@@ -1,0 +1,42 @@
+{% load custom_tag %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .condition a{
+            display: inline-block;
+            padding: 3px 5px;
+            border:1px solid #dddddd;
+            margin: 5px 5px;
+            background-color: darkgray;
+        }
+        .condition a.active{
+            background-color: dodgerblue;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>过滤条件</h1>
+    <div class="condition">
+        <div>
+            {% filter_all arg 'article_type_id' %}
+            {% filter_type_list arg article_type_list %}
+
+        </div>
+        <div>
+            {% filter_all arg 'category_id' %}
+            {% filter_cate_list arg category_list  %}
+        </div>
+        <div></div>
+    </div>
+    <h1>查询结果</h1>
+    <ul>
+        {% for item in res %}
+            <li>{{ item.title }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
